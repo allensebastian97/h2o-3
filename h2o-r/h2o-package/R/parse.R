@@ -78,19 +78,10 @@ h2o.parseRaw <- function(data, pattern="", destination_frame = "", header=NA, se
   if(!is.character(path) || is.na(path) || !nzchar(path)) stop("`path` must be a non-empty character string")
   if(!is.character(pattern) || length(pattern) != 1L || is.na(pattern)) stop("`pattern` must be a character string")
   .key.validate(destination_frame)
-  if(length(path) > 1L) {
-    destFrames <- c()
-    fails <- c()
-    for(path2 in path){
-      res <-.h2o.__remoteSend(.h2o.__IMPORT, path=path2)
-      destFrames <- c(destFrames, res$destination_frames)
-      fails <- c(fails, res$fails)
-    }
-    res$destination_frames <- destFrames
-    res$fails <- fails
-  } else {
-    res <- .h2o.__remoteSend(.h2o.__IMPORT, path=path)
-  }
+  res <-.h2o.__remoteSend(.h2o.__IMPORT, path=path, pattern=pattern)
+  destFrame <- res$destination_frames
+  fails <- res$fails
+
   if(length(res$fails) > 0L) {
     for(i in seq_len(length(res$fails)))
       cat(res$fails[[i]], "failed to import")
