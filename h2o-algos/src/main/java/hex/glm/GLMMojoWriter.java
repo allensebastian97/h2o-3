@@ -11,6 +11,9 @@ public class GLMMojoWriter extends ModelMojoWriter<GLMModel, GLMModel.GLMParamet
     super(model);
   }
 
+  public GLMMojoWriter(){
+  }
+
   @Override
   public String mojoVersion() {
     return "1.00";
