@@ -40,7 +40,7 @@
     sprintf("%s://%s:%s/%s/%s", scheme, conn@ip, as.character(conn@port), h2oRestApiVersion, urlSuffix)
 }
 
-.h2o.doRawREST <- function(conn, h2oRestApiVersion, urlSuffix, parms, method, fileUploadInfo, ...) {
+.h2o.doRawREST <- function(conn, h2oRestApiVersion, urlSuffix, parms, method, fileUploadInfo, binary=FALSE, ...) {
   timeout_secs <- 0
   stopifnot(is(conn, "H2OConnection"))
   stopifnot(is.character(urlSuffix))
@@ -136,7 +136,11 @@
 
   if ((method == "GET") || (method == "DELETE")) {
     h <- basicHeaderGatherer()
-    t <- basicTextGatherer(.mapUnicode = FALSE)
+    if(binary){
+      t <- multiTextGatherer(url,binary = c(TRUE))
+    }else{
+      t <- basicTextGatherer(.mapUnicode = FALSE)
+    }
     tmp <- tryCatch(curlPerform(url = url,
                                 customrequest = method,
                                 writefunction = t$update,
@@ -150,7 +154,7 @@
     if (! .__curlError) {
       httpStatusCode = as.numeric(h$value()["status"])
       httpStatusMessage = h$value()["statusMessage"]
-      payload = t$value()
+      payload = ifelse(binary,names(t),t$value())
     }
   } else if (! missing(fileUploadInfo)) {
     stopifnot(method == "POST")
