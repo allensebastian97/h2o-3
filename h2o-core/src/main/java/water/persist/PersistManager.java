@@ -276,7 +276,8 @@ public class PersistManager {
       // Attempt NFS import instead
       I[Value.NFS].importFiles(path, pattern, files, keys, fails, dels);
     }
-    if(!pattern.isEmpty()) {
+
+    if(pattern != null && !pattern.isEmpty()) {
       ArrayList<String> subsetFiles = matchPattern(path,files,pattern); //New files ArrayList after matching pattern of choice
       files.retainAll(subsetFiles); //Subset files based on subsetFiles
       ArrayList<String> subsetKey = matchPattern(path,keys,pattern); //New keys ArrayList after matching pattern of choice
@@ -507,8 +508,9 @@ public class PersistManager {
 
   /**
    * Finds all entries in the list that matches the regex
+   * @param prefix The substring to extract
    * @param fileList The list of strings to check
-   * @param matchStr The regular expression to use
+   * @param matchStr The regular expression to use on the string after prefix
    * @return list containing the matching entries
    */
   public ArrayList<String> matchPattern(String prefix, ArrayList<String> fileList, String matchStr){
@@ -531,7 +533,7 @@ public class PersistManager {
    * @param substring The substring to extract
    * @return string after subsetting
    */
-  static String afterPrefix(String wholeString , String substring) {
+  private static String afterPrefix(String wholeString , String substring) {
     // Returns a substring containing all characters after a string.
     int posSubstring = wholeString.lastIndexOf(substring);
     if (posSubstring == -1) {

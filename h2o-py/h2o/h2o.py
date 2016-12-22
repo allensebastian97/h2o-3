@@ -256,7 +256,7 @@ def lazy_import(path, pattern):
     :param pattern: Character string containing a regular expression to match file(s) in the folder.
     """
     assert_is_type(path, str, [str])
-    assert_is_type(pattern, str)
+    assert_is_type(pattern, str, None)
     if is_type(path, str):
         return _import(path,pattern)
     else:
@@ -265,7 +265,7 @@ def lazy_import(path, pattern):
 
 def _import(path, pattern):
     assert_is_type(path, str)
-    assert_is_type(pattern, str)
+    assert_is_type(pattern, str, None)
     j = api("GET /3/ImportFiles", data={"path": path, "pattern": pattern})
     if j["fails"]: raise ValueError("ImportFiles of " + path + " failed on " + str(j["fails"]))
     return j["destination_frames"]
@@ -323,8 +323,8 @@ def upload_file(path, destination_frame=None, header=0, sep=None, col_names=None
     return H2OFrame()._upload_parse(path, destination_frame, header, sep, col_names, col_types, na_strings)
 
 
-def import_file(path=None, pattern="", destination_frame=None, parse=True, header=0, sep=None, col_names=None, col_types=None,
-                na_strings=None):
+def import_file(path=None, destination_frame=None, parse=True, header=0, sep=None, col_names=None, col_types=None,
+                na_strings=None, pattern=None):
     """
     Import a dataset that is already on the cluster.
 
@@ -363,7 +363,7 @@ def import_file(path=None, pattern="", destination_frame=None, parse=True, heade
                 "categorical", "factor", "enum", "time")
     natype = U(str, [str])
     assert_is_type(path, str, [str])
-    assert_is_type(pattern,str)
+    assert_is_type(pattern, str, None)
     assert_is_type(destination_frame, str, None)
     assert_is_type(parse, bool)
     assert_is_type(header, -1, 0, 1)
